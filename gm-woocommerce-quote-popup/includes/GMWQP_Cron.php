@@ -30,6 +30,7 @@ class GMWQP_Cron {
 <tr><th>Enquiry</th><td>[enquiry]</td></tr>
 <tr><th>Product</th><td>[product]</td></tr></table>',
 			'gmwqp_email_sucesemsg' => 'Your Message Successfully Sent!',
+			'gmwqp_reci_email'=>get_bloginfo('admin_email'),
 			'gmwqp_include_exclude' => 'all',
 			
 		);
