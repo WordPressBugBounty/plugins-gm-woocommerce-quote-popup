@@ -1,5 +1,5 @@
 === Product Enquiry for WooCommerce===
-Tested up to: 6.6
+Tested up to: 6.6.2
 Tags: product enquiry for woocommerce,product inquiry for woocommerce, request a quote woocommerce, woocommerce enquiry, woocommerce inquiry
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
