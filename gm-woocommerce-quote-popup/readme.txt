@@ -1,89 +1,75 @@
-=== Product Enquiry for WooCommerce===
-Tested up to: 6.6.2
-Tags: product enquiry for woocommerce,product inquiry for woocommerce, request a quote woocommerce, woocommerce enquiry, woocommerce inquiry
+=== Product Enquiry for WooCommerce ===
+Tested up to: 6.9
+Tags: product enquiry for woocommerce, product inquiry for woocommerce, request a quote woocommerce, woocommerce enquiry, woocommerce inquiry, woocommerce form builder, call for price, catalog mode, woocommerce quote plugin
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 == Description ==
 
-The **Product Enquiry for WooCommerce** plugin adds an enquiry button to every WooCommerce Product Page. Using this button, a potential customer can send you an enquiry or request a quote for a product he is unsure of purchasing. By addressing his enquiries or quote requests, you can convert an unsure customer, into a buyer!
+**Product Enquiry for WooCommerce** is the ultimate solution to let your customers ask questions or request quotes directly from your product pages. 
 
-[Demo](https://codesmade.com/demo/shop/) | [Get Primum ](https://www.codesmade.com/store/product-enquiry-for-woocommerce-pro/) | [Support](https://www.codesmade.com/contact-us/) | [Documentation](https://www.codesmade.com/product-enquiry-for-woocommerce-documentation/)
+Perfect for B2B stores, wholesale businesses, or any store needing to hide prices and add a "Request a Quote" button. Convert unsure visitors into loyal customers by answering their queries instantly!
 
-**WooCommerce Product Enquiry** easy to custom can be ask question with seller.
+[Buy Now](https://www.codesmade.com/store/product-enquiry-for-woocommerce-pro/) | [Demo](https://codesmade.com/demo/shop/) | [Support](https://www.codesmade.com/contact-us/) | [Documentation](https://www.codesmade.com/product-enquiry-for-woocommerce-documentation/)
 
-In **WooCommerce Product Inquiry** We provide two option for customer enquiry **product enquiry form woocommerce**.
+### Why Choose Product Enquiry for WooCommerce?
 
-* Simple Enquiry Button with popup Woocommerce
-* Enquiry for woocommerce product
+Turn your WooCommerce store into a powerful **Quote Request System** or **Catalog Mode** store. 
 
-**WooCommerce Product Enquiry Form** using with mobile fiendly layout to vistor make elegent layout.
+Our plugin serves as a complete **WooCommerce Request a Quote** solution, allowing you to hide prices, hide the "Add to Cart" button, and replace them with a customizable enquiry button.
 
-Enquiry form will be added to product details page. Get emails about enquiries and very easy to customize.
+Whether you need a simple "Ask a Question" button or a full-featured "Request a Quote" system, this plugin handles it all.
 
-In addition, one can also use this plugin to get product enquiries from buyers via enquiry **add contact form to woocommerce product**. Install it now and create your own catalog site over just a few clicks .
+### Key Features
 
-buyers have questions about your products, could be about the price or the purchase quantity or the color or anything in between **product enquiry for woocommerce wordpress plugin**. 
+#### &#128640; Quote Request & Enquiry Button
+*   **Request a Quote Button**: Add a "Request a Quote" or "Product Enquiry" button to all or specific products.
+*   **WooCommerce Catalog Mode**: Easily **Hide Price** and **Hide Add to Cart** buttons to turn your shop into a catalog. **Get Primum**
+*   **Custom Locations**: Display the button after the "Add to Cart" button, inside product tabs, or use shortcodes for custom placement.
+*   **Inquiry Cart**: Allow customers to add multiple products to a quote basket and submit a bulk enquiry.
 
+#### &#128221; Advanced Form Builder
+*   **Drag & Drop Fields**: Create custom forms with Text, Radio, Checkbox, Select, and Textarea fields. **Get Primum**
+*   **Validation**: Set fields as required or optional.
+*   **Custom Labels**: fully customizable field labels and placeholders.
+*   **Google reCAPTCHA**: Project your forms from spam with built-in Google reCAPTCHA v2 and v3 integration. **Get Premium**
 
-= Features =
+#### &#128231; Email Notifications & Automation
+*   **Admin Notifications**: Receive instant email notifications with all enquiry details.
+*   **Customer Confirmation**: Send automatic acknowledgement emails to customers. **Get Premium**
+*   **Email Customizer**: Customize email subjects, headings, and body content with dynamic placeholders.
 
-<h4>Enquiry Button Settings</h4>
-<ul>
-<li>Enable/Disable</li>
-<li>Product Enquiry Recipient's Email, subject, Button Label</li>
-<li>Display Page : Shop Page and Single Product Page</li>
-<li>Single Product Button Location : After Add to Cart Button And Enquiry in Tab</li>
-<li>Shortcode : <code>[gmwqp_enquiry_single_product]</code>  or <code>[gmwqp_enquiry_single_product id='{product_id}']</code></li>
-</ul>
+#### &#128279; Integration & Webhooks (New!)
+*   **Webhook Integration**: Automatically send enquiry data to external services (CRM, Slack, Zapier, etc.) via POST request.
+*   **Enable/Disable Toggle**: Easily turn webhooks on or off from the settings.
 
-<h4>Enquiry List</h4>
-<ul>
-<li>Store All data of Enqiry Cart and Single Product Enquiry</li>
-<li>Export All Records</li>
-</ul>
+#### &#127919; Display Rules & Filtering
+*   **User Validity**: Choose to show the button for All Users, Only Logged-in Users, or Only Logged-out Users.
+*   **Category Logic**: Include or Exclude the enquiry button for specific product categories. **Get Premium**
+*   **Stock Management**: Option to show the enquiry button even when a product is "Out of Stock". **Get Premium**
 
-<h4>General Settings</h4>
-<ul>
-<li>Users Show : All Users, Only Logged in Users, Only Logged out Users</li>
-<li>Show Enquiry Button When Product is out of stock <strong>Get Primum</strong></li>
-<li>Remove Price From Product <strong>Get Primum</strong></li>
-<li>Hide Add to Cart Button <strong>Get Primum</strong></li>
-<li>Enable/Disable in form Label / Placeholder</li>
-<li>Customize Button Background Color - Text Color</li>
-<li>Customize Button Hover Background Color - Text Color</li>
-<li>Redirect after Enquiry form Submission</li>
-<li>Disable Cart and Checkout Page?</li>
-</ul>
+#### &#127912; Design & Content Customization
+*   **Button Styling**: Fully customize button background color, text color, and hover effects to match your brand.
+*   **Content Blocks**: Add custom content (HTML/Text) before and after the enquiry form.
+*   **Labels vs Placeholders**: Choose to display field labels or use cleaner placeholders.
 
-<h4>Include/Exclude</h4>
-<ul><li>Include/Exclude Category</li></ul>
+#### &#128257; Redirection & Flow
+*   **Post-Submission Redirect**: Redirect users to a "Thank You" or custom page after successful enquiry.
+*   **Disable Checkout**: Option to completely disable WooCommerce Search, Cart, and Checkout pages and redirect to a custom URL (perfect for Catalog mode).
 
-<h4>From Customizer</h4>
-<ul>
-<li>Add Custom Field <strong>Get Primum</strong></li>
-<li>Field Type : Text, Radio, Checkbox, Select, Textarea <strong>Get Primum</strong></li>
-<li>Enable/Disable Field And Required</li>
-<li>Content Before Enquiry From</li>
-<li>Content After Enquiry From</li>
-</ul>
+#### &#128187; Management & Analysis
+*   **Enquiry List**: View and manage all enquiries directly from the WordPress dashboard.
+*   **CSV Export**: Export enquiry data to CSV for analysis or external use.
+*   **Filters**: Filter enquiries by date range or specific data fields.
 
-<h4>Email Customizer</h4>
-<ul>
-<li>Customize Recipient's Email</li>
-<li>Customize Email Subject</li>
-<li>Send Enquiry Email to Customer As Well <strong>Get Primum</strong></li>
-<li>Customize Success Message</li>
-<li>Customize Email Body</li>
-</ul>
+#### &#127760; Translation & Localization
+*   **Translation Ready**: Fully translatable labels and messages.
+*   **Multilingual Support**: Compatible with translation plugins.
 
-**Woocommerce product enquiry form popup** showing popup as will single product page on tab. **product enquiry form plugin** best choice for seller whose much of part using with inquiry.
-
-We give you one more feature that **woocommerce catalog enquiry** by bulk of product you can add product in enquiry cart and possible to **woocommerce product catalog mode & enquiry form**.
-
-**Woocommerce quick product enquiry form** using with fast way to provide customer feedback with **woocommerce product request plugin**.
-
-we provide you all feature **free request a quote wordpress plugin** to great idea for **easy woocommerce request a quote**.
+### Shortcodes
+*   `[gm_woo_enquiry_cart]` - Display the Enquiry Cart anywhere.
+*   `[gmwqp_enquiry_single_product]` - Display the enquiry button on a single product page.
+*   `[gmwqp_enquiry_single_product id="123"]` - Display the enquiry button for a specific product ID.
 
 <h3>DOM events</h3>
 <code>
@@ -100,7 +86,7 @@ window.addEventListener('Gm_enquiry_submitted', function(event) {
 
 [Add to Quote For Woocommerce](https://wordpress.org/plugins/product-quote-cart-for-wc/) feature to WooCommerce with a brief, one-line product description, you can either use a plugin or manually customize the WooCommerce product loop.
 
-[Product Shortcode – Widget – Block for Woocommerce](https://wordpress.org/plugins/gm-woo-product-list-widget/) in WooCommerce for displaying products with descriptions, you can leverage the built-in WooCommerce shortcodes or customize them to suit your needs.
+[Product Shortcode Block for Woocommerce](https://wordpress.org/plugins/gm-woo-product-list-widget/) in WooCommerce for displaying products with descriptions, you can leverage the built-in WooCommerce shortcodes or customize them to suit your needs.
 
 [Show Variations On Shop & Category WooCommerce](https://wordpress.org/plugins/woo-show-single-variations-shop-category/) you can show product variations directly on the shop and category pages.
 
@@ -116,6 +102,15 @@ window.addEventListener('Gm_enquiry_submitted', function(event) {
 
 == Frequently Asked Questions ==
 
-= is that support DOM events support for setup pixel or tag? =
+= Can I use this for Catalog Mode? =
+Yes! You can easily "Hide Price" and "Hide Add to Cart" buttons from the General Settings to transform your store into a catalog-only site.
 
-Yes, You can setup dom events 
+= Does it support webhooks? =
+Yes, you can configure a Webhook URL in the General Settings to send enquiry data to any external URL.
+
+= Can I customize the form fields? =
+Absolutely. The built-in Form Customizer lets you add, remove, and reorder fields to suit your needs.
+
+= Is it mobile friendly? =
+Yes, the enquiry popup and buttons are fully responsive and optimized for mobile devices.
+ 

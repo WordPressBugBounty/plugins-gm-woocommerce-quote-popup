@@ -11,22 +11,31 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 	public $global_exclude_category;
 
 	public function __construct () {
-
-		$this->global_include_category = get_option( 'gmwqp_include_category' );
-		$this->global_exclude_category = get_option( 'gmwqp_exclude_category' );
+		
 		add_filter( 'init', array( $this, 'initcut' ));
 		add_filter( 'wp', array( $this, 'wpcut' ));
 		add_action( 'woocommerce_before_add_to_cart_quantity', array( $this, 'add_script_variation_name' ));
-		
+		add_filter( 'woocommerce_is_purchasable', array( $this, 'disable_add_to_cart_for_specific_product' ), 10, 2 );
+	}
+	public function disable_add_to_cart_for_specific_product( $is_purchasable, $product ) {
+		global $gmwqp_arr;
+		if ( $this->gmwqp_is_exclude($product->get_id()) === false && $gmwqp_arr['gmwqp_hide_add_to_cart']== "yes" ) {
+			return false; 
+		}
+
+		return $is_purchasable; 
 	}
 
 	public function wpcut(){
-		$gmwqp_disable_cart_checkout_page = get_option( 'gmwqp_disable_cart_checkout_page' );
-		$gmwqp_redirect_disable_cart_checkout_page = get_option( 'gmwqp_redirect_disable_cart_checkout_page' );
-		if($gmwqp_disable_cart_checkout_page == 'yes'){
+		global $gmwqp_arr;
+		$this->global_include_category = $gmwqp_arr['gmwqp_include_category'];
+		$this->global_exclude_category = $gmwqp_arr['gmwqp_exclude_category'];
+		$gmwqp_disable_cart_checkout_page = $gmwqp_arr['gmwqp_disable_cart_checkout_page'];
+		$gmwqp_redirect_disable_cart_checkout_page = $gmwqp_arr['gmwqp_redirect_disable_cart_checkout_page'];
+		if($gmwqp_disable_cart_checkout_page == 'yes' && $gmwqp_redirect_disable_cart_checkout_page!=''){
 			if(is_cart() || is_checkout()){
 				
-				wp_redirect(get_permalink($gmwqp_redirect_disable_cart_checkout_page));
+				wp_redirect($gmwqp_redirect_disable_cart_checkout_page);
 				exit;
 			}	
 		}
@@ -34,11 +43,11 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 	}
 
 	public function initcut(){
-
-		$gmwqp_display = get_option( 'gmwqp_display' );
-		$gmwqp_sp_bl = get_option( 'gmwqp_sp_bl' );
-		$gmwqp_enable_setting = get_option( 'gmwqp_enable_setting' );
-		$gmwqp_usershow = get_option( 'gmwqp_usershow' );
+		global $gmwqp_arr;
+		$gmwqp_display = $gmwqp_arr['gmwqp_display'];
+		$gmwqp_sp_bl = $gmwqp_arr['gmwqp_sp_bl'];
+		$gmwqp_enable_setting = $gmwqp_arr['gmwqp_enable_setting'];
+		$gmwqp_usershow = $gmwqp_arr['gmwqp_usershow'];
 		$showforuser = 'yes';
 		if($gmwqp_usershow=='logged_user' && !is_user_logged_in()){
 			$showforuser = 'no';
@@ -62,16 +71,23 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 		
 		add_action( 'wp_enqueue_scripts',  array( $this, 'gmwqp_insta_scritps' ) );
 		add_shortcode('gmwqp_enquiry_single_product', array( $this, 'gmwqp_enquiry_single_product_shortcode' ));
+
 	}
 
 	public function gmwqp_insta_scritps () {
 		wp_enqueue_style('gmwqp-stylee', GMWQP_PLUGIN_URL . '/assents/css/style.css', array(), '1.0.0', 'all');
 		wp_enqueue_script('gmwqp-script', GMWQP_PLUGIN_URL . '/assents/js/script.js', array(), '1.0.0', true );
-		wp_localize_script( 'gmwqp-script', 'gmwqp_ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+		$ajax_nonce = wp_create_nonce('gmwqp_ajax_action');
+		// Localize the script with AJAX URL and nonce
+		wp_localize_script('gmwqp-script', 'gmwqp_ajax_object', array(
+		    'ajax_url' => admin_url('admin-ajax.php'),
+		    'ajax_nonce' => $ajax_nonce,
+		));
 
 	}
 
 	function gmwqp_enquiry_single_product_shortcode($atts){
+		global $gmwqp_arr;
 		$output ='';
 		global $post;
 		if (isset($atts['id']) && $atts['id']!='') {
@@ -85,30 +101,32 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 			if($this->gmwqp_is_exclude($product->get_id())==true){
 			return;
 			}
+			
 			ob_start();
-			if (get_option('gmwqp_button_label')!='') {
-					$gmwqp_button_label = esc_html(get_option('gmwqp_button_label'));
+			if ($gmwqp_arr['gmwqp_trasnlation_button_label']!='') {
+					$gmwqp_trasnlation_button_label = esc_html($gmwqp_arr['gmwqp_trasnlation_button_label']);
 			}else{
-				$gmwqp_button_label = __('Inquiry!', 'gmwqp' );
+				$gmwqp_trasnlation_button_label = __('Inquiry!', 'gmwqp' );
 			}
 			
+
 			?>
 			<div class="gmwqp_inquirybtn_loop">
-				<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button " title="<?php echo $product->get_name(); ?>" attr_id="<?php echo $product->get_id();?>"><?php echo $gmwqp_button_label;?></a>
+				<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button" title="<?php echo $product->get_name(); ?>" attr_id="<?php echo $product->get_id();?>"><?php echo $gmwqp_trasnlation_button_label;?></a>
 			</div>
 			
 			<?php
-			
 			$output = ob_get_contents();
 			ob_end_clean();
 		}
+		
 		return $output;
 	}
-	
 	public function gmwqp_new_tab( $tabs ) {
-		$gmwqp_button_label = esc_html(get_option('gmwqp_button_label'));
+		global $gmwqp_arr;
+		$gmwqp_trasnlation_button_label = esc_html($gmwqp_arr['gmwqp_trasnlation_button_label']);
 	    $tabs['desc_tab'] = array(
-	        'title'     => __( $gmwqp_button_label, 'woocommerce' ),
+	        'title'     => __( $gmwqp_trasnlation_button_label, 'woocommerce' ),
 	        'priority'  => 50,
 	        'callback'  => array( $this, 'gmwqp_new_enquiry' )
 	    );
@@ -131,19 +149,20 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 	
 	public function gmwqp_after_addtocart() {
 		global $product;
+		global $gmwqp_arr;
 
 		if($this->gmwqp_is_exclude($product->get_id())==true){
 			return;
 		}
 
-		if (get_option('gmwqp_button_label')!='') {
-			$gmwqp_button_label = esc_html(get_option('gmwqp_button_label'));
+		if ($gmwqp_arr['gmwqp_trasnlation_button_label']!='') {
+			$gmwqp_trasnlation_button_label = esc_html($gmwqp_arr['gmwqp_trasnlation_button_label']);
 		}else{
-			$gmwqp_button_label = __('Inquiry!', 'gmwqp' );
+			$gmwqp_trasnlation_button_label = __('Inquiry!', 'gmwqp' );
 		}
 		?>
 		<div class="gmwqp_inquirybtn">
-			<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button " title="<?php echo $product->get_name(); ?>"  attr_id="<?php echo $product->get_id();?>"><?php echo $gmwqp_button_label;?></a>
+			<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button" title="<?php echo $product->get_name(); ?>"  attr_id="<?php echo $product->get_id();?>"><?php echo $gmwqp_trasnlation_button_label;?></a>
 		</div>
 		<?php
 	}
@@ -155,28 +174,30 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 
 	
 	public function gmwqp_after_button(  ){
+		global $gmwqp_arr;
 		global $product;
 
 		if($this->gmwqp_is_exclude($product->get_id())==true){
 			return;
 		}
 		
-		if (get_option('gmwqp_button_label')!='') {
-				$gmwqp_button_label = esc_html(get_option('gmwqp_button_label'));
+		if ($gmwqp_arr['gmwqp_trasnlation_button_label']!='') {
+				$gmwqp_trasnlation_button_label = esc_html($gmwqp_arr['gmwqp_trasnlation_button_label']);
 		}else{
-			$gmwqp_button_label = __('Inquiry!', 'gmwqp' );
+			$gmwqp_trasnlation_button_label = __('Inquiry!', 'gmwqp' );
 		}
 		
 
 		?>
 		<div class="gmwqp_inquirybtn_loop">
-			<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button " title="<?php echo $product->get_name(); ?>" attr_id="<?php echo $product->get_id();?>"><?php echo $gmwqp_button_label;?></a>
+			<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button" title="<?php echo $product->get_name(); ?>" attr_id="<?php echo $product->get_id();?>"><?php echo $gmwqp_trasnlation_button_label;?></a>
 		</div>
 		
 		<?php
 		
 	}
 	public function gmwqp_addcssloop(  ){
+		global $gmwqp_arr;
 		global $product;
 		if($this->gmwqp_is_exclude($product->get_id())==true){
 			return;
@@ -184,9 +205,17 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 		?>
 		<style type="text/css">
 			<?php
-			if (get_option( 'gmwqp_remove_price' ) == "yes") {
+			if ($gmwqp_arr['gmwqp_remove_price'] == "yes") {
 			?>
-			.post-<?php echo  $product->get_id();?> .price{
+			.post-<?php echo  $product->get_id();?> .price, .post-<?php echo  $product->get_id();?> .wp-block-woocommerce-product-price{
+				display: none !important;
+			}
+			<?php 
+			}
+			if ($gmwqp_arr['gmwqp_hide_add_to_cart'] == "yes") {
+			?>
+			
+			.post-<?php echo  $product->get_id();?> .product_type_external,.post-<?php echo  $product->get_id();?> .single_add_to_cart_button{
 				display: none !important;
 			}
 			<?php 
@@ -197,15 +226,23 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 	}
 	public function gmwqp_addcsssingle(  ){
 		global $product;
+		global $gmwqp_arr;
 		if($this->gmwqp_is_exclude($product->get_id())==true){
 			return;
 		}
 		?>
 		<style type="text/css">
 			<?php
-			if (get_option( 'gmwqp_remove_price' ) == "yes") {
+			if ($gmwqp_arr['gmwqp_remove_price'] == "yes") {
 			?>
-			.post-<?php echo  $product->get_id();?> .price{
+			.post-<?php echo  $product->get_id();?> .price, .post-<?php echo  $product->get_id();?> .wp-block-woocommerce-product-price{
+				display: none !important;
+			}
+			<?php 
+			}
+			if ($gmwqp_arr['gmwqp_hide_add_to_cart'] == "yes") {
+			?>
+			.post-<?php echo  $product->get_id();?> .single_add_to_cart_button{
 				display: none !important;
 			}
 			<?php 
@@ -221,8 +258,9 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 	
 
 	public function gmwqp_is_exclude($product_id){
-		$gmwqp_include_exclude = get_option( 'gmwqp_include_exclude' );
-		$gmwqp_show_product_outofstock = get_option( 'gmwqp_show_product_outofstock' );
+		global $gmwqp_arr;
+		$gmwqp_include_exclude = $gmwqp_arr['gmwqp_include_exclude'];
+		$gmwqp_show_product_outofstock = $gmwqp_arr['gmwqp_show_product_outofstock'];
 		$product = wc_get_product( $product_id );
 		$isretus = false;
 		$product_cats_ids = wc_get_product_term_ids( $product_id, 'product_cat' );
@@ -235,7 +273,9 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 		}elseif($gmwqp_include_exclude=='exclude'){
 			$excludeids = (empty($this->global_exclude_category))?array():$this->global_exclude_category;
 			$is_exclude = array_intersect($excludeids,$product_cats_ids);
-			if(count($is_exclude)>0){
+			if(count($is_exclude)==0){
+				$isretus = false;
+			}else{
 				$isretus = true;
 			}
 		}else{
@@ -244,14 +284,15 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 		//print_r($product);
 	//	echo $product->is_in_stock()."sssssssssssss" ;
 		if($gmwqp_show_product_outofstock=='yes'){
-			if ( ! $product->managing_stock() && ! $product->is_in_stock() ){
+			if (  ! $product->is_in_stock() ){
 				//echo "ggg";
+				$isretus = false;
 			}else{
 				//echo "bb";
 				$isretus = true;
 			}
 		}
-		//echo $isretus;
+		
 		
 		return $isretus;
 	}
@@ -292,3 +333,4 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 
 
  
+

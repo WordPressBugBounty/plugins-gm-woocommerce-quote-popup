@@ -1,0 +1,61 @@
+/*!*********************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src-admin/admin.scss ***!
+  \*********************************************************************************************************************************************************************************************************************************************/
+.active-tab {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  border-bottom: 2px solid #007cba;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.ml-10 {
+  margin-left: 10px;
+}
+
+.GMadminTable {
+  text-align: left;
+  width: 100%;
+}
+
+.GMadminTable th,
+.GMadminTable td {
+  vertical-align: top;
+  padding: 10px;
+}
+
+.GMadminTable th {
+  font-weight: 500;
+  font-size: 13px;
+  width: 300px;
+}
+
+.gmwqp_flex {
+  display: flex;
+  gap: 5px;
+}
+
+.gmwqp_disabled {
+  opacity: 0.6;
+}
+
+h2.components-panel__body-title {
+  background: #eee;
+}
+
+.errormsg {
+  color: red;
+}
+
+#GMWQP-admin-root ul {
+  list-style: disc;
+  padding-left: 19px;
+}
+
+/*# sourceMappingURL=admin.css.map*/

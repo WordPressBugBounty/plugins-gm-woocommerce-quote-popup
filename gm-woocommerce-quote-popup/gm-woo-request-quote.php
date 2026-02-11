@@ -5,7 +5,7 @@
  * Version:     3.2
  * Author:      Gravity Master
  * License:     GPLv2 or later
- * Text Domain: gmwqp
+ * Text Domain: gm-woocommerce-quote-popup
  */
 
 /* Stop immediately if accessed directly. */
@@ -49,3 +49,4 @@ new GMWQP_Shortcode();
 new GMWQP_Comman();
 new GMWQP_Admin();
 new GMWQP_Frontend();
+new GMWQP_API();

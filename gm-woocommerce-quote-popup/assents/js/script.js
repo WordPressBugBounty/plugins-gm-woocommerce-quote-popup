@@ -1,18 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll(".gmwqp_inq").forEach(function(element) {
-        element.addEventListener('click', function(event) {
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('gmwqp_inq')) {
             event.preventDefault();
-            var productEnquiryTitle = this.getAttribute("title");
-            var attrId = this.getAttribute("attr_id");
-            //document.querySelector(".gmwqp_popup_title").innerHTML = productEnquiryTitle;
+
+            var productEnquiryTitle = event.target.getAttribute("title");
+            var attrId = event.target.getAttribute("attr_id");
+
             document.querySelector(".gmqqp_product_vl").value = productEnquiryTitle;
             document.querySelector(".gmqqp_product_id").value = attrId;
 
-            // Open custom modal
             openCustomModal(".gmwqp_popup_op");
 
             return false;
-        });
+        }
     });
 
     document.querySelector(".gmwqp_popup_op_form").addEventListener('submit', function(event) {
@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
             msgElement.remove();
         });
         var formData = new FormData(this);
+        formData.append('_ajax_nonce', gmwqp_ajax_object.ajax_nonce);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", gmwqp_ajax_object.ajax_url, true);
         xhr.responseType = 'json';

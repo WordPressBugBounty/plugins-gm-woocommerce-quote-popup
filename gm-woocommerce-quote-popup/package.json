@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "build": "wp-scripts build",
+    "build:admin": "wp-scripts build src-admin/admin.js --output-path=./build/admin",
+    "start:admin": "wp-scripts start src-admin/admin.js --output-path=./build/admin",
+    "build:frontend": "wp-scripts build src-frontend/frontend.js --output-path=./build/frontend",
+    "start:frontend": "wp-scripts start src-frontend/frontend.js --output-path=./build/frontend"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^30.9.0"
+  },
+  "dependencies": {
+    "@react-pdf/renderer": "^4.1.6",
+    "html-react-parser": "^5.2.2",
+    "react-pdf-html": "^2.1.3"
+  }
+}

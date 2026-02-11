@@ -10,7 +10,7 @@ class GMWQP_Shortcode {
 
 
 	public function gmwqp_wp_footer() {
-		
+		global $gmwqp_arr;
 		?>
 		<div  class="gmwqp_popup_op">
 			<div class="gmwqp_inner_popup_op">
@@ -18,7 +18,7 @@ class GMWQP_Shortcode {
 					<a href="#" class="gmwqp_close b-close"><img src="<?php echo esc_url( GMWQP_PLUGIN_URL.'assents/img/close_btn.png' );?>" /></a>
 					
 					
-					<h3 class="gmwqp_popup_title"><?php echo esc_html(get_option('gmwqp_form_title')); ?></h3>
+					<h3 class="gmwqp_popup_title"><?php echo esc_html($gmwqp_arr['gmwqp_trasnlation_form_title']); ?></h3>
 					<?php
 					$this->gmwqp_form_footer();
 					?>
@@ -30,31 +30,31 @@ class GMWQP_Shortcode {
 				text-decoration: none !important;
 			}
 			<?php
-			if(get_option('gmwqp_enquiry_btn_bg_color')!=''){
+			if($gmwqp_arr['gmwqp_enquiry_btn_bg_color']!=''){
 				?>
 				.gmwqp_inq_addtocart, .gmwqp_inq , .viewcaren, .gmqqp_submit_btn{
-					background-color:<?php echo esc_html(get_option('gmwqp_enquiry_btn_bg_color'));?> !important;
+					background-color:<?php echo esc_html($gmwqp_arr['gmwqp_enquiry_btn_bg_color']);?> !important;
 				}
 				<?php
 			}
-			if(get_option('gmwqp_enquiry_btn_bg_hover_color')!=''){
+			if($gmwqp_arr['gmwqp_enquiry_btn_bg_hover_color']!=''){
 				?>
 				.gmwqp_inq_addtocart:hover, .gmwqp_inq:hover , .viewcaren:hover, .gmqqp_submit_btn:hover{
-					background-color:<?php echo esc_html(get_option('gmwqp_enquiry_btn_bg_hover_color'));?> !important;
+					background-color:<?php echo esc_html($gmwqp_arr['gmwqp_enquiry_btn_bg_hover_color']);?> !important;
 				}
 				<?php
 			}
-			if(get_option('gmwqp_enquiry_btn_text_color')!=''){
+			if($gmwqp_arr['gmwqp_enquiry_btn_text_color']!=''){
 				?>
 				.gmwqp_inq_addtocart, .gmwqp_inq, .viewcaren, .gmqqp_submit_btn{
-					color:<?php echo esc_html(get_option('gmwqp_enquiry_btn_text_color'));?> !important;
+					color:<?php echo esc_html($gmwqp_arr['gmwqp_enquiry_btn_text_color']);?> !important;
 				}
 				<?php
 			}
-			if(get_option('gmwqp_enquiry_btn_text_hover_color')!=''){
+			if($gmwqp_arr['gmwqp_enquiry_btn_text_hover_color']!=''){
 				?>
 				.gmwqp_inq_addtocart:hover, .gmwqp_inq:hover, .viewcaren:hover, .gmqqp_submit_btn:hover{
-					color:<?php echo esc_html(get_option('gmwqp_enquiry_btn_text_hover_color'));?> !important;
+					color:<?php echo esc_html($gmwqp_arr['gmwqp_enquiry_btn_text_hover_color']);?> !important;
 				}
 				<?php
 			}
@@ -65,15 +65,16 @@ class GMWQP_Shortcode {
 	}
 
 	public function gmwqp_form_footer($product_title='',$is_tab=false,$prod_id=''){
-		$gmwqp_label_show = get_option('gmwqp_label_show');
-		$gmwqp_field_customizer_enble = get_option( 'gmwqp_field_customizer_enble' );
-		$gmwqp_field_customizer_required = get_option( 'gmwqp_field_customizer_required' );
-		$gmwqp_field_customizer_field = get_option( 'gmwqp_field_customizer_field' );
-		$gmwqp_field_customizer_type = get_option( 'gmwqp_field_customizer_type' );
-		$gmwqp_field_customizer_order = get_option( 'gmwqp_field_customizer_order' );
-		$gmwqp_field_customizer_option = get_option( 'gmwqp_field_customizer_option' );
-		$gmwqp_content_beforeform = get_option( 'gmwqp_content_beforeform' );
-		$gmwqp_content_afterform = get_option( 'gmwqp_content_afterform' );
+		global $gmwqp_arr;
+		$gmwqp_label_show = $gmwqp_arr['gmwqp_label_show'];
+		$gmwqp_field_customizer_enble = $gmwqp_arr['gmwqp_field_customizer_enble'];
+		$gmwqp_field_customizer_required = $gmwqp_arr['gmwqp_field_customizer_required'];
+		$gmwqp_field_customizer_field = $gmwqp_arr['gmwqp_field_customizer_field'];
+		$gmwqp_field_customizer_type = $gmwqp_arr['gmwqp_field_customizer_type'];
+		$gmwqp_field_customizer_order = $gmwqp_arr['gmwqp_field_customizer_order'];
+		$gmwqp_field_customizer_option = $gmwqp_arr['gmwqp_field_customizer_option'];
+		$gmwqp_content_beforeform = $gmwqp_arr['gmwqp_content_beforeform'];
+		$gmwqp_content_afterform = $gmwqp_arr['gmwqp_content_afterform'];
 		//echo "<pre>";
 		//print_r($gmwqp_field_customizer_order);
 		//$fruits = array("d" => "lemon", "a" => "orange", "b" => "banana", "c" => "apple");
@@ -139,22 +140,7 @@ class GMWQP_Shortcode {
 									echo '<input class="gmqqp_input" placeholder="'.$isplace.' '.$isreq.'" type="'.$value_gmwqp_fields['type'].'" name="'.$value_gmwqp_fields['name'].'" value="">';
 									
 								}
-								if (in_array($value_gmwqp_fields['type'], array("captcha"))){
-									/*$digit1 = mt_rand(1,20);
-								    $digit2 = mt_rand(1,20);
-						            $math = "$digit1 + $digit2";
-						            $gmqqp_answer = $digit1 + $digit2;
-						            if(isset(WC()->session)){
-						            	WC()->session->set( 'gmqqp_answer', $gmqqp_answer );
-						            }
-								   
-
-								    echo '<div class="gmqqp_captchadiv">';
-								    echo "<label>What's <strong>".$math."</strong> = </label>";
-									echo '<input class="gmqqp_input" autocomplete="off" placeholder="'.$isplace.' '.$isreq.'" type="text" name="'.$value_gmwqp_fields['name'].'" value="">';
-									echo '</div>';*/
-									
-								}
+								
 								if (in_array($value_gmwqp_fields['type'], array("textarea"))){
 									echo '<textarea class="gmqqp_input" placeholder="'.$isplace.' '.$isreq.'" name="'.$value_gmwqp_fields['name'].'"></textarea>';
 								}
@@ -186,9 +172,18 @@ class GMWQP_Shortcode {
 							<input type="hidden" name="gmqqp_product" class="gmqqp_product_vl" value="<?php echo $product_title; ?>" />
 							<input type="hidden" name="gmqqp_product_id" class="gmqqp_product_id" value="<?php echo $prod_id; ?>" />
 						</div>
+						<?php 
+						if($gmwqp_arr['gmwqp_captcha']=='yes' && $gmwqp_arr['gmwqp_captcha_site_key']!=''  && $gmwqp_arr['gmwqp_captcha_secrete_key']!='' ){
+							?>
+							<div class="g-recaptcha" data-sitekey="<?php echo $gmwqp_arr['gmwqp_captcha_site_key'];?>"></div>
+							<?php
+						}
+						?>
 					</div>
+					
+					
 					<div class="gmqqp_submit">
-						<button type="submit" class="gmqqp_submit_btn button wp-block-button__link wp-element-button"><?php _e('Send!', 'gmwqp'); ?></button>
+						<button type="submit" class="gmqqp_submit_btn wp-block-button__link wp-element-button"><?php echo esc_html($gmwqp_arr['gmwqp_trasnlation_button_submit']); ?></button>
 					</div>
 			</form>
 			<?php
@@ -201,6 +196,13 @@ class GMWQP_Shortcode {
 			}
 			?>
 		</div>
+		<?php 
+		if($gmwqp_arr['gmwqp_captcha']=='yes' && $gmwqp_arr['gmwqp_captcha_site_key']!=''  && $gmwqp_arr['gmwqp_captcha_secrete_key']!=''){
+		?>
+		<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+		<?php
+		}
+		?>
 		<?php
 	}
 
