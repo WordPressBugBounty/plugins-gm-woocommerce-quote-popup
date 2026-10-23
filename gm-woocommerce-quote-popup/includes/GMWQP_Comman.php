@@ -203,6 +203,14 @@ class GMWQP_Comman {
 	        $gmwqp_email_sub = str_ireplace("[product]",$prodnameformail,$gmwqp_email_sub);
 			wp_mail( $to, $gmwqp_email_sub, $body ,$headers);
 			if($gmwqp_send_enquiry_email_cutomer=='yes' && $gmwqp_email!=''){
+				$headers = array(
+				    'Content-Type: text/html; charset=UTF-8'
+				);
+
+				if ( $gmwqp_send_enquiry_replyto_customer_email=='yes'  ) { // your flag
+				    $headers[] = 'Reply-To: '.$to.' <'.$to.'>';
+				}
+				$gmwqp_customer_email_subject = str_ireplace("[product]",$prodnameformail,$gmwqp_customer_email_subject);
 				wp_mail( $gmwqp_email, $gmwqp_customer_email_subject, $body ,$headers);
 			}
 

@@ -72,9 +72,10 @@ class GMWQP_Admin {
 				'show_in_admin_bar'   => false,
 				'menu_position'       => 5,
 				'can_export'          => true,
-				'has_archive'         => true,
+				'has_archive'         => false,
 				'exclude_from_search' => true,
-				'publicly_queryable'  => true,
+				'public' => false,
+				'publicly_queryable'  => false,
 				);
 	
 		// Registering your Custom Post Type

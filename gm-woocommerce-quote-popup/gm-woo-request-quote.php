@@ -50,3 +50,15 @@ new GMWQP_Comman();
 new GMWQP_Admin();
 new GMWQP_Frontend();
 new GMWQP_API();
+
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'GMWQP_action_links' );
+if( ! function_exists( 'GMWQP_action_links' ) ) {
+	function GMWQP_action_links( $links ) {
+
+		$settings_link = '<a href="' . admin_url( 'admin.php?page=GMWQP' ) . '">Settings</a>';
+
+		array_unshift( $links, $settings_link );
+
+		return $links;
+	}
+}
