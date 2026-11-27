@@ -1,0 +1,570 @@
+@import './components/variables';
+
+// ==========================================================================
+// Trigger buttons ( .gmwqp_inq rendered server-side ) — light-touch polish
+// ==========================================================================
+.gmwqp_inq {
+    transition: all var(--gmwqp-f-transition) !important;
+}
+
+// ==========================================================================
+// Overlay + Modal
+// ==========================================================================
+// Theme-proof sizing: themes often leave inputs at content-box.
+.gmwqp-f-overlay,
+.gmwqp-frontend-inline {
+    &, *, *::before, *::after { box-sizing: border-box; }
+}
+
+body.gmwqp-f-modal-open {
+    overflow: hidden;
+}
+
+.gmwqp-f-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(17, 15, 30, 0.55);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: gmwqp-f-fade-in 160ms ease;
+    font-family: var(--gmwqp-f-font);
+}
+
+.gmwqp-f-modal {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    max-height: 88vh;
+    overflow-y: auto;
+    background: var(--gmwqp-f-surface);
+    border-radius: var(--gmwqp-f-radius-lg);
+    box-shadow: var(--gmwqp-f-shadow-lg);
+    padding: 32px 28px 28px;
+    animation: gmwqp-f-pop-in 220ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.is-busy {
+        pointer-events: none;
+        opacity: 0.85;
+    }
+
+    &__close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border-radius: 50%;
+        border: none;
+        background: var(--gmwqp-f-surface-muted);
+        color: var(--gmwqp-f-close);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all var(--gmwqp-f-transition);
+
+        &:hover {
+            background: var(--gmwqp-f-border);
+            filter: brightness(0.93);
+            transform: rotate(90deg);
+        }
+
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 4px var(--gmwqp-f-primary-soft);
+        }
+    }
+
+    &:focus { outline: none; }
+
+    &__head {
+        display: flex;
+        align-items: center;
+        margin: 0 0 20px;
+        padding: 0 44px 16px 0;
+        border-bottom: 1px solid var(--gmwqp-f-border);
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 1.25;
+        color: var(--gmwqp-f-text);
+        letter-spacing: -0.2px;
+    }
+
+    &__subtitle {
+        margin: 3px 0 0;
+        font-size: 13px;
+        line-height: 1.4;
+        color: var(--gmwqp-f-text-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@keyframes gmwqp-f-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes gmwqp-f-pop-in {
+    from { opacity: 0; transform: scale(0.94) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+// ==========================================================================
+// Inline (tab) mount — no overlay, just a clean card
+// ==========================================================================
+.gmwqp-frontend-inline {
+    .gmwqp-f-form-wrap {
+        background: var(--gmwqp-f-surface);
+        border: 1px solid var(--gmwqp-f-border);
+        border-radius: var(--gmwqp-f-radius-md);
+        padding: 24px;
+        max-width: 640px;
+    }
+}
+
+// ==========================================================================
+// Form
+// ==========================================================================
+.gmwqp-f-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.gmwqp-f-extra-content {
+    font-size: 13.5px;
+    color: var(--gmwqp-f-text-muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.gmwqp-f-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &__label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--gmwqp-f-text-muted);
+    }
+
+    &__required {
+        color: var(--gmwqp-f-danger);
+        margin-left: 3px;
+    }
+}
+
+.gmwqp-f-input,
+.gmwqp-f-textarea,
+.gmwqp-f-select {
+    width: 100%;
+    font-family: var(--gmwqp-f-font);
+    font-size: 14px;
+    color: var(--gmwqp-f-text);
+    background: var(--gmwqp-f-surface-muted);
+    border: 1.5px solid var(--gmwqp-f-border);
+    border-radius: var(--gmwqp-f-radius-sm);
+    padding: 11px 14px;
+    transition: border-color var(--gmwqp-f-transition), box-shadow var(--gmwqp-f-transition), background var(--gmwqp-f-transition);
+
+    &:focus {
+        outline: none;
+        border-color: var(--gmwqp-f-primary);
+        background: var(--gmwqp-f-surface);
+        box-shadow: 0 0 0 4px var(--gmwqp-f-primary-soft);
+    }
+
+    &::placeholder {
+        color: var(--gmwqp-f-text-faint);
+    }
+}
+
+.gmwqp-f-textarea {
+    resize: vertical;
+    min-height: 96px;
+}
+
+.gmwqp-f-select-wrap {
+    position: relative;
+
+    .gmwqp-f-select {
+        appearance: none;
+        padding-right: 34px;
+        cursor: pointer;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        width: 7px;
+        height: 7px;
+        border-right: 2px solid var(--gmwqp-f-text-faint);
+        border-bottom: 2px solid var(--gmwqp-f-text-faint);
+        transform: translateY(-65%) rotate(45deg);
+        pointer-events: none;
+    }
+}
+
+// Radio
+.gmwqp-f-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.gmwqp-f-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--gmwqp-f-text);
+    cursor: pointer;
+
+    input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    &__dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 1.5px solid var(--gmwqp-f-border-strong);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all var(--gmwqp-f-transition);
+
+        &::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            transform: scale(0);
+            transition: transform var(--gmwqp-f-transition);
+        }
+    }
+
+    input:checked ~ &__dot {
+        background: var(--gmwqp-f-primary);
+        border-color: var(--gmwqp-f-primary);
+
+        &::after { transform: scale(1); }
+    }
+}
+
+// Checkbox
+.gmwqp-f-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.gmwqp-f-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--gmwqp-f-text);
+    cursor: pointer;
+
+    input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    &__box {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        border: 1.5px solid var(--gmwqp-f-border-strong);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all var(--gmwqp-f-transition);
+    }
+
+    &__tick {
+        width: 12px;
+        height: 12px;
+        fill: none;
+        stroke: #fff;
+        stroke-width: 2.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0;
+        transform: scale(0.6);
+        transition: all var(--gmwqp-f-transition);
+    }
+
+    input:checked ~ &__box {
+        background: var(--gmwqp-f-primary);
+        border-color: var(--gmwqp-f-primary);
+    }
+
+    input:checked ~ &__box &__tick {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+// ==========================================================================
+// Submit button (colors overridable via CSS vars set from plugin settings)
+// ==========================================================================
+.gmwqp-f-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    font-family: var(--gmwqp-f-font);
+    font-size: 14px;
+    font-weight: 700;
+    padding: 13px 20px;
+    margin-top: 4px;
+    border: none;
+    border-radius: var(--gmwqp-f-radius-sm);
+    background: var(--gmwqp-f-btn-bg);
+    color: var(--gmwqp-f-btn-text);
+    cursor: pointer;
+    transition: all var(--gmwqp-f-transition);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.28);
+
+    &:hover:not(:disabled) {
+        background: var(--gmwqp-f-btn-bg-hover);
+        color: var(--gmwqp-f-btn-text-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.32);
+    }
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+}
+
+// ==========================================================================
+// Result banners
+// ==========================================================================
+.gmwqp-f-result {
+    border-radius: var(--gmwqp-f-radius-sm);
+    padding: 14px 16px;
+    font-size: 13.5px;
+    line-height: 1.5;
+
+    p { margin: 0; }
+    p + p { margin-top: 4px; }
+
+    &--error {
+        background: var(--gmwqp-f-danger-soft);
+        color: var(--gmwqp-f-danger);
+        border: 1px solid rgba(220, 38, 38, 0.18);
+    }
+
+    &--success {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 12px;
+        background: var(--gmwqp-f-success-soft);
+        color: var(--gmwqp-f-success);
+        border: 1px solid rgba(5, 150, 105, 0.18);
+        padding: 28px 20px;
+        font-size: 14.5px;
+        font-weight: 600;
+        animation: gmwqp-f-pop-in 220ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+.gmwqp-f-result__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: var(--gmwqp-f-success);
+    box-shadow: 0 0 0 6px var(--gmwqp-f-success-soft);
+}
+
+// ==========================================================================
+// Spinner
+// ==========================================================================
+.gmwqp-f-spinner {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    &__dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: gmwqp-f-bounce 1s infinite ease-in-out both;
+
+        &:nth-child(1) { animation-delay: -0.28s; }
+        &:nth-child(2) { animation-delay: -0.14s; }
+    }
+}
+
+@keyframes gmwqp-f-bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+// ==========================================================================
+// Responsive
+// ==========================================================================
+@media (max-width: 600px) {
+    .gmwqp-f-modal {
+        padding: 26px 20px 20px;
+        max-width: 100%;
+    }
+}
+
+// ==========================================================================
+// Field-level validation
+// ==========================================================================
+.gmwqp-f-field {
+    &__error {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--gmwqp-f-danger);
+        animation: gmwqp-f-fade-in 160ms ease;
+    }
+
+    &.has-error {
+        .gmwqp-f-input,
+        .gmwqp-f-textarea,
+        .gmwqp-f-select {
+            border-color: var(--gmwqp-f-danger);
+            background: var(--gmwqp-f-danger-soft);
+
+            &:focus { box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12); }
+        }
+    }
+}
+
+.gmwqp-f-submit:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--gmwqp-f-primary-soft), 0 4px 14px rgba(79, 70, 229, 0.28);
+}
+
+// ==========================================================================
+// Small screens — modal fills the whole screen (full height, square corners)
+// ==========================================================================
+@media (max-width: 560px) {
+    .gmwqp-f-overlay {
+        padding: 0;
+        align-items: stretch;
+    }
+
+    .gmwqp-f-modal {
+        max-width: none;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+        animation: gmwqp-f-sheet-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .gmwqp-f-modal__close {
+        top: 16px;
+        right: 16px;
+    }
+}
+
+@keyframes gmwqp-f-sheet-in {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+// ==========================================================================
+// Dark mode + reduced motion
+// ==========================================================================
+@media (prefers-color-scheme: dark) {
+    .gmwqp-f-overlay,
+    .gmwqp-frontend-inline {
+        --gmwqp-f-close: #f3f2fb;
+        --gmwqp-f-text: #f3f2fb;
+        --gmwqp-f-text-muted: #b4b2c6;
+        --gmwqp-f-text-faint: #7f7d93;
+        --gmwqp-f-border: #2f2d44;
+        --gmwqp-f-border-strong: #403d5a;
+        --gmwqp-f-surface: #1b1930;
+        --gmwqp-f-surface-muted: #242238;
+        --gmwqp-f-danger-soft: rgba(220, 38, 38, 0.14);
+        --gmwqp-f-success-soft: rgba(5, 150, 105, 0.16);
+        --gmwqp-f-primary-soft: rgba(129, 140, 248, 0.22);
+    }
+
+    .gmwqp-f-result__icon { background: var(--gmwqp-f-surface); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gmwqp-f-overlay,
+    .gmwqp-f-modal,
+    .gmwqp-f-result--success {
+        animation: none;
+    }
+
+    .gmwqp-f-modal__close:hover { transform: none; }
+}
+
+.gmwqp-f-loading {
+    display: flex;
+    justify-content: center;
+    padding: 28px 0;
+}
+
+// ==========================================================================
+// Enquiry (trigger) button — each colour is applied only if chosen in the admin
+// (Reset = theme default). JS toggles the .gmwqp-c-* flags on <html>.
+// ==========================================================================
+.gmwqp-c-bg .gmwqp_inq {
+    background: var(--gmwqp-f-btn-bg) !important;
+    border-color: var(--gmwqp-f-btn-bg) !important;
+}
+.gmwqp-c-text .gmwqp_inq { color: var(--gmwqp-f-btn-text) !important; }
+.gmwqp-c-bg-h .gmwqp_inq:is(:hover, :focus-visible) {
+    background: var(--gmwqp-f-btn-bg-hover) !important;
+    border-color: var(--gmwqp-f-btn-bg-hover) !important;
+}
+.gmwqp-c-text-h .gmwqp_inq:is(:hover, :focus-visible) { color: var(--gmwqp-f-btn-text-hover) !important; }
+

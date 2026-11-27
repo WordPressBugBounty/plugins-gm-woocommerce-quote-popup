@@ -114,6 +114,10 @@ class GMWQP_API {
         foreach ($settings as $option_name => $option_value) {
             // Sanitize the option name
             $option_name = sanitize_key($option_name);
+            // Only known plugin options may be saved; editable text strings are a Pro feature in Lite.
+            if ( ! array_key_exists( $option_name, (array) $GLOBALS['gmwqp_arr'] ) || 0 === strpos( $option_name, 'gmwqp_trasnlation_' ) ) {
+                continue;
+            }
            /* echo "<pre>";
             print_r($option_value);
             echo "</pre>";*/
@@ -168,6 +172,13 @@ class GMWQP_API {
         $field_required = sanitize_text_field($settings['required']);
         $field_enable = sanitize_text_field($settings['enable']);
         $field_options = sanitize_textarea_field($settings['options']);
+        // Lite: only Text / Email / Textarea fields (Select, Radio, Checkbox are a Pro feature).
+        if ( ! in_array( $field_type, array( 'text', 'email', 'textarea' ), true ) ) {
+            return new WP_REST_Response(array(
+                'success' => false,
+                'message' => 'This field type is available in the Pro version.',
+            ), 403);
+        }
         // Validate the required fields
         if (empty($field_label)) {
             return new WP_REST_Response(array(

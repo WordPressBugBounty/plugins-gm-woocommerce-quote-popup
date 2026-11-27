@@ -21,15 +21,11 @@ class GMWQP_Admin {
 
 	public function GMWQP_admin_script ($hook) {
 		if($hook=='toplevel_page_GMWQP'){
-			wp_enqueue_style('wp-components');
-			wp_register_script(
-	            'gmwqp-react-admin',
-	            GMWQP_PLUGIN_URL.'/build/admin/admin.js', // Adjust the path if necessary
-		        ['wp-element','wp-dom-ready','wp-components'], // Ensure this depends on WordPress's React
-		        '1.0',
-		        true
-
-		        );
+			// The admin UI is a self-contained React app using the plugin's own component kit,
+			// so no WordPress component stylesheet (wp-components) is loaded.
+			$js      = GMWQP_PLUGIN_DIR . 'build/admin/admin.js';
+			$version = file_exists( $js ) ? filemtime( $js ) : '1';
+			wp_register_script( 'gmwqp-react-admin', GMWQP_PLUGIN_URL . 'build/admin/admin.js', array(), $version, true );
 
 			global $gmwqp_translation;
 	        wp_localize_script('gmwqp-react-admin', 'gmwqp_wp_ajax', [
@@ -41,6 +37,7 @@ class GMWQP_Admin {
 	            'savecustomfield' => rest_url('gmwqp/v1/save-customfield'),
 	            'deletecustomfield' => rest_url('gmwqp/v1/delete-customfield'),
 	            'site_url' => get_site_url(),
+	            'pro_url' => GMWQP_PRO_URL,
 	            'gmwqpcategory' => get_terms( 'product_cat', array(
                         'hide_empty' => false,
                     ) ),
@@ -55,9 +52,9 @@ class GMWQP_Admin {
 
 		    wp_enqueue_style(
 		            'gmwqp-react-admin-style',
-		            GMWQP_PLUGIN_URL.'/build/admin/admin.css',
+		            GMWQP_PLUGIN_URL.'build/admin/admin.css',
 		            array(),
-		            1,
+		            $version,
 		        );
 			
 		}
@@ -65,7 +62,7 @@ class GMWQP_Admin {
 
 	public function GMWQP_init () {
 		$args = array(
-				'label'               => __( 'gmwqp_enquiry', 'gmwqp' ),
+				'label'               => __( 'gmwqp_enquiry', 'gm-woocommerce-quote-popup' ),
 				'show_ui'             => false,
 				'show_in_menu'        => false,
 				'show_in_nav_menus'   => false,
@@ -88,27 +85,11 @@ class GMWQP_Admin {
 	}
 
 	public function GMWQP_page() {
-
-		
-	?>
-	<div>
-	  
-	   <h2><?php _e('Woo Quote Popup', 'gmwqp'); ?></h2>
-	    <div class="about-text">
-	        <p>
-				Thank you for using our plugin! If you are satisfied, please reward it a full five-star <span style="color:#ffb900">★★★★★</span> rating.                        <br>
-	            <a href="https://wordpress.org/support/plugin/gm-woocommerce-quote-popup/reviews/?filter=5" target="_blank">Reviews</a>
-	            
-	            | <a href="https://www.codesmade.com/product-enquiry-for-woocommerce-documentation/" target="_blank">Documentation</a>
-	            | <a href="https://www.codesmade.com/contact-us/" target="_blank">Support 24x7</a> <span style="font-weight: bold;">We will respond to your support request within 24 hours.</span>
-	        </p>
-	    </div>
-	   <?php
-	   echo '<div id="GMWQP-admin-root"></div>';
 		?>
-	</div>
+		<div class="wrap gmwqp-wrap">
+			<h1 class="screen-reader-text"><?php esc_html_e( 'Woo Quote Popup', 'gm-woocommerce-quote-popup' ); ?></h1>
+			<div id="GMWQP-admin-root"></div>
+		</div>
 		<?php
 	}
-
-	
 }

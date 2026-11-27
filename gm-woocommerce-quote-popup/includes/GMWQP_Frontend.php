@@ -15,17 +15,7 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 		add_filter( 'init', array( $this, 'initcut' ));
 		add_filter( 'wp', array( $this, 'wpcut' ));
 		add_action( 'woocommerce_before_add_to_cart_quantity', array( $this, 'add_script_variation_name' ));
-		add_filter( 'woocommerce_is_purchasable', array( $this, 'disable_add_to_cart_for_specific_product' ), 10, 2 );
 	}
-	public function disable_add_to_cart_for_specific_product( $is_purchasable, $product ) {
-		global $gmwqp_arr;
-		if ( $this->gmwqp_is_exclude($product->get_id()) === false && $gmwqp_arr['gmwqp_hide_add_to_cart']== "yes" ) {
-			return false; 
-		}
-
-		return $is_purchasable; 
-	}
-
 	public function wpcut(){
 		global $gmwqp_arr;
 		$this->global_include_category = $gmwqp_arr['gmwqp_include_category'];
@@ -55,8 +45,6 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 		if($gmwqp_usershow=='logged_out' && is_user_logged_in()){
 			$showforuser = 'no';
 		}
-		add_filter( 'woocommerce_after_shop_loop_item', array( $this, 'gmwqp_addcssloop' ), 10, 3 );
-		add_action( 'woocommerce_single_product_summary', array( $this, 'gmwqp_addcsssingle' ) ,35);
 
 		if($gmwqp_enable_setting=='yes' && $showforuser == 'yes'){
 			if($gmwqp_display=='all'){
@@ -75,15 +63,16 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 	}
 
 	public function gmwqp_insta_scritps () {
-		wp_enqueue_style('gmwqp-stylee', GMWQP_PLUGIN_URL . '/assents/css/style.css', array(), '1.0.0', 'all');
-		wp_enqueue_script('gmwqp-script', GMWQP_PLUGIN_URL . '/assents/js/script.js', array(), '1.0.0', true );
-		$ajax_nonce = wp_create_nonce('gmwqp_ajax_action');
-		// Localize the script with AJAX URL and nonce
-		wp_localize_script('gmwqp-script', 'gmwqp_ajax_object', array(
-		    'ajax_url' => admin_url('admin-ajax.php'),
-		    'ajax_nonce' => $ajax_nonce,
-		));
+		// Standalone bundle (React is bundled): no WordPress script dependencies.
+		$css = GMWQP_PLUGIN_DIR . 'build/frontend/frontend.css';
+		$js  = GMWQP_PLUGIN_DIR . 'build/frontend/frontend.js';
+		wp_enqueue_style( 'gmwqp-frontend', GMWQP_PLUGIN_URL . 'build/frontend/frontend.css', array(), file_exists( $css ) ? filemtime( $css ) : '1', 'all' );
+		wp_enqueue_script( 'gmwqp-frontend', GMWQP_PLUGIN_URL . 'build/frontend/frontend.js', array(), file_exists( $js ) ? filemtime( $js ) : '1', true );
 
+		// Only static values here; everything else is fetched at runtime (cache safe).
+		wp_localize_script( 'gmwqp-frontend', 'gmwqp_frontend_data', array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+		) );
 	}
 
 	function gmwqp_enquiry_single_product_shortcode($atts){
@@ -106,13 +95,13 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 			if ($gmwqp_arr['gmwqp_trasnlation_button_label']!='') {
 					$gmwqp_trasnlation_button_label = esc_html($gmwqp_arr['gmwqp_trasnlation_button_label']);
 			}else{
-				$gmwqp_trasnlation_button_label = __('Inquiry!', 'gmwqp' );
+				$gmwqp_trasnlation_button_label = __('Inquiry!', 'gm-woocommerce-quote-popup' );
 			}
 			
 
 			?>
 			<div class="gmwqp_inquirybtn_loop">
-				<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button" title="<?php echo $product->get_name(); ?>" attr_id="<?php echo $product->get_id();?>"><?php echo $gmwqp_trasnlation_button_label;?></a>
+				<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button" title="<?php echo esc_attr( $product->get_name() ); ?>" attr_id="<?php echo esc_attr( $product->get_id() ); ?>"><?php echo $gmwqp_trasnlation_button_label;?></a>
 			</div>
 			
 			<?php
@@ -139,9 +128,11 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 	    $product_title = get_the_title();
 	    ?>
 	    <div class="gmwqp_form_dls">
-	    	<?php
-			$this->gmwqp_form_footer($product_title,true,$prod_id);
-			?>
+	    	<div
+	    		class="gmwqp-frontend-inline"
+	    		data-product-id="<?php echo esc_attr( $prod_id ); ?>"
+	    		data-product-title="<?php echo esc_attr( $product_title ); ?>"
+	    	></div>
 	    </div>
 	    <?php
 	}
@@ -158,11 +149,11 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 		if ($gmwqp_arr['gmwqp_trasnlation_button_label']!='') {
 			$gmwqp_trasnlation_button_label = esc_html($gmwqp_arr['gmwqp_trasnlation_button_label']);
 		}else{
-			$gmwqp_trasnlation_button_label = __('Inquiry!', 'gmwqp' );
+			$gmwqp_trasnlation_button_label = __('Inquiry!', 'gm-woocommerce-quote-popup' );
 		}
 		?>
 		<div class="gmwqp_inquirybtn">
-			<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button" title="<?php echo $product->get_name(); ?>"  attr_id="<?php echo $product->get_id();?>"><?php echo $gmwqp_trasnlation_button_label;?></a>
+			<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button" title="<?php echo esc_attr( $product->get_name() ); ?>"  attr_id="<?php echo esc_attr( $product->get_id() ); ?>"><?php echo $gmwqp_trasnlation_button_label;?></a>
 		</div>
 		<?php
 	}
@@ -184,79 +175,18 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 		if ($gmwqp_arr['gmwqp_trasnlation_button_label']!='') {
 				$gmwqp_trasnlation_button_label = esc_html($gmwqp_arr['gmwqp_trasnlation_button_label']);
 		}else{
-			$gmwqp_trasnlation_button_label = __('Inquiry!', 'gmwqp' );
+			$gmwqp_trasnlation_button_label = __('Inquiry!', 'gm-woocommerce-quote-popup' );
 		}
 		
 
 		?>
 		<div class="gmwqp_inquirybtn_loop">
-			<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button" title="<?php echo $product->get_name(); ?>" attr_id="<?php echo $product->get_id();?>"><?php echo $gmwqp_trasnlation_button_label;?></a>
+			<a href="#" class="button gmwqp_inq wp-block-button__link wp-element-button" title="<?php echo esc_attr( $product->get_name() ); ?>" attr_id="<?php echo esc_attr( $product->get_id() ); ?>"><?php echo $gmwqp_trasnlation_button_label;?></a>
 		</div>
 		
 		<?php
 		
 	}
-	public function gmwqp_addcssloop(  ){
-		global $gmwqp_arr;
-		global $product;
-		if($this->gmwqp_is_exclude($product->get_id())==true){
-			return;
-		}
-		?>
-		<style type="text/css">
-			<?php
-			if ($gmwqp_arr['gmwqp_remove_price'] == "yes") {
-			?>
-			.post-<?php echo  $product->get_id();?> .price, .post-<?php echo  $product->get_id();?> .wp-block-woocommerce-product-price{
-				display: none !important;
-			}
-			<?php 
-			}
-			if ($gmwqp_arr['gmwqp_hide_add_to_cart'] == "yes") {
-			?>
-			
-			.post-<?php echo  $product->get_id();?> .product_type_external,.post-<?php echo  $product->get_id();?> .single_add_to_cart_button{
-				display: none !important;
-			}
-			<?php 
-			}
-			?>
-		</style>
-		<?php
-	}
-	public function gmwqp_addcsssingle(  ){
-		global $product;
-		global $gmwqp_arr;
-		if($this->gmwqp_is_exclude($product->get_id())==true){
-			return;
-		}
-		?>
-		<style type="text/css">
-			<?php
-			if ($gmwqp_arr['gmwqp_remove_price'] == "yes") {
-			?>
-			.post-<?php echo  $product->get_id();?> .price, .post-<?php echo  $product->get_id();?> .wp-block-woocommerce-product-price{
-				display: none !important;
-			}
-			<?php 
-			}
-			if ($gmwqp_arr['gmwqp_hide_add_to_cart'] == "yes") {
-			?>
-			.post-<?php echo  $product->get_id();?> .single_add_to_cart_button{
-				display: none !important;
-			}
-			<?php 
-			}
-			?>
-		</style>
-		<?php
-	}
-	
-
-	
-
-	
-
 	public function gmwqp_is_exclude($product_id){
 		global $gmwqp_arr;
 		$gmwqp_include_exclude = $gmwqp_arr['gmwqp_include_exclude'];
@@ -299,20 +229,20 @@ class GMWQP_Frontend  extends GMWQP_Shortcode{
 
 	public function add_script_variation_name() {
 	   global $product;
-	   if ( $product->is_type( 'variable' ) ) {
+	   if ( $product instanceof WC_Product && $product->is_type( 'variable' ) ) {
 	   		/*echo "<pre>";
 	   		print_r($product->get_name());
 	   		echo "</pre>";*/
 	   		ob_start();
 	   		$separator = ' - ';
 			?>
-			var name = '<?php global $product; echo $product->get_name(); ?>';
+			var name = <?php echo wp_json_encode( $product->get_name(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ); ?>;
 
 	        jQuery('form.cart').on('show_variation', function(event, data) {
 	            var text = '';
 
 	            jQuery.each( data.attributes, function( key, value ) {
-	                text += '<?php echo $separator; ?>' + value;
+	                text += <?php echo wp_json_encode( $separator ); ?> + value;
 	            });
 	            setInterval(function () {
 	            	jQuery('.gmqqp_product_vl').val( name + text );

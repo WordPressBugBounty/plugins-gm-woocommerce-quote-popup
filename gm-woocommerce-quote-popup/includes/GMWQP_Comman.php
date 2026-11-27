@@ -5,12 +5,11 @@ class GMWQP_Comman {
 	public function __construct () {
 
 				add_action( 'init', array( $this, 'gmwqp_default' ) );
-                add_action('woocommerce_single_product_summary', array($this, 'gmwqp_single'), 5);
 
                 add_action( 'wp_ajax_gmqqp_enquiry', array( $this, 'gmqqp_enquiry' ));
 				add_action( 'wp_ajax_nopriv_gmqqp_enquiry', array( $this, 'gmqqp_enquiry' ));
 
-				add_action( 'woocommerce_init',  array($this, 'gmwqp_startSession') );
+				// Removed: forcing a WooCommerce session cookie on every visit made every page uncacheable.
     }
 
     public function gmwqp_startSession(){
@@ -69,25 +68,10 @@ class GMWQP_Comman {
 			
 		}
 		
-		if ($gmwqp_arr['gmwqp_remove_price'] == "yes") {
-			 remove_action('woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10);
-		}
-		if ($gmwqp_arr['gmwqp_hide_add_to_cart'] == "yes") {
-			/*remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart');
-			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart',30);   */
-   			
-		}
              
 		
 	}
 
-	public function gmwqp_single(){
-		global $gmwqp_arr;
-		if ($gmwqp_arr['gmwqp_remove_price'] == "yes") {
-			remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_price', 10);
-		}
-		
-	}
 
 	public function gmqqp_enquiry() {
 		if (!isset($_POST['_ajax_nonce']) || !wp_verify_nonce($_POST['_ajax_nonce'], 'gmwqp_ajax_action')) {
@@ -113,12 +97,12 @@ class GMWQP_Comman {
 		foreach ($gmwqp_field_customizer_field as $keylooparrm => $valuelooparrm) {
 			if($gmwqp_field_customizer_enble[$keylooparrm]=="yes"){
 				if(empty($_REQUEST[$keylooparrm]) && $gmwqp_field_customizer_required[$keylooparrm]=="yes"){
-					$msg .= '<div>'.__( esc_html($gmwqp_arr['gmwqp_trasnlation_form_required']).' '.esc_html($valuelooparrm).'!', 'gmwqp' ).'</div>';
+					$msg .= '<div>'.esc_html( $gmwqp_arr['gmwqp_trasnlation_form_required'].' '.$valuelooparrm.'!' ).'</div>';
 				}
 				/*if($gmwqp_field_customizer_type[$keylooparrm]=='captcha'){
 					$session_val = WC()->session->get( 'gmqqp_answer');
 					if ($session_val != $_REQUEST[$keylooparrm] ){
-						$msg .= '<li>'.__( 'Please Enter Correct Captcha!', 'gmwqp' ).'</li>';
+						$msg .= '<li>'.__( 'Please Enter Correct Captcha!', 'gm-woocommerce-quote-popup' ).'</li>';
 					}
 				}*/
 			}
@@ -134,7 +118,7 @@ class GMWQP_Comman {
 
 		    if ($result['success']) {
 		    }else {
-		        $msg .= '<div>'.__( 'Captcha verification failed. Please try again.!', 'gmwqp' ).'</div>';
+		        $msg .= '<div>'.__( 'Captcha verification failed. Please try again.!', 'gm-woocommerce-quote-popup' ).'</div>';
 		    }
 		}
 
@@ -156,53 +140,60 @@ class GMWQP_Comman {
 
 			$post_id = wp_insert_post(array (
 										   'post_type' => 'gmwqp_enquiry',
-										   'post_title' => $_REQUEST['name'],
+										   'post_title' => sanitize_text_field( wp_unslash( isset($_REQUEST['name']) ? $_REQUEST['name'] : '' ) ),
 										   'post_status' => 'publish',
 										));
-			$body = $gmwqp_email_body;
-			
+			// Every value that ends up in the HTML email body is escaped here,
+			// whatever the field type. Replacement happens in a single pass so a
+			// submitted value such as "[site_url]" is never expanded afterwards.
+			$replacements = array();
 			foreach ($gmwqp_field_customizer_field as $keylooparrm => $valuelooparrm) {
 				if($gmwqp_field_customizer_enble[$keylooparrm]=="yes"){
+					$raw = isset($_REQUEST[$keylooparrm]) ? wp_unslash($_REQUEST[$keylooparrm]) : '';
 					if($gmwqp_field_customizer_type[$keylooparrm]=='checkbox'){
-						$body = str_ireplace("[".$keylooparrm."]",implode(",",$_REQUEST[$keylooparrm]),$body);
+						$raw = implode(",", array_map('strval', array_filter((array) $raw, 'is_scalar')));
 					}
-					elseif($gmwqp_field_customizer_type[$keylooparrm]!='captcha'){
-						$body = str_ireplace("[".$keylooparrm."]",$_REQUEST[$keylooparrm],$body);
+					if($gmwqp_field_customizer_type[$keylooparrm]!='captcha'){
+						$replacements[strtolower($keylooparrm)] = esc_html( is_scalar($raw) ? (string) $raw : '' );
 					}
-					update_post_meta( $post_id, $keylooparrm,$_REQUEST[$keylooparrm]);
+					update_post_meta( $post_id, $keylooparrm, isset($_REQUEST[$keylooparrm]) ? $_REQUEST[$keylooparrm] : '' );
 				}
 			}
-			
-			
-			
 
-			$gmwqp_email = sanitize_text_field($_REQUEST['email']);
-			
+			$gmwqp_email = sanitize_text_field( wp_unslash( isset($_REQUEST['email']) ? $_REQUEST['email'] : '' ) );
+			$gmwqp_email_valid = is_email($gmwqp_email) ? $gmwqp_email : '';
 
-			
-			$prodnameformail= sanitize_text_field($_REQUEST['gmqqp_product']);
-			$gmqqp_product_id= sanitize_text_field($_REQUEST['gmqqp_product_id']);
-			update_post_meta( $post_id, 'product_gmwqp', sanitize_text_field($_REQUEST['gmqqp_product']) );	
-			
-			$body = str_ireplace("[product]",$prodnameformail,$body);
-			$product_name_link = "<a href='".get_permalink($gmqqp_product_id)."'>".$prodnameformail."</a>";
-			$body = str_ireplace("[product_name_link]",$product_name_link,$body);
-			update_post_meta( $post_id, 'productid_gmwqp', sanitize_text_field($_REQUEST['gmqqp_product_id']) );
-			$body = str_ireplace("[product_id]",$gmqqp_product_id,$body);
-			$body = str_ireplace("[site_title]", get_bloginfo( 'name' ),$body);
-			$body = str_ireplace("[site_url]",get_site_url(),$body);
-			
+			$prodnameformail = sanitize_text_field( wp_unslash( isset($_REQUEST['gmqqp_product']) ? $_REQUEST['gmqqp_product'] : '' ) );
+			$gmqqp_product_id = absint( isset($_REQUEST['gmqqp_product_id']) ? $_REQUEST['gmqqp_product_id'] : 0 );
+			update_post_meta( $post_id, 'product_gmwqp', wp_slash( $prodnameformail ) );
+			update_post_meta( $post_id, 'productid_gmwqp', $gmqqp_product_id );
+
+			$replacements['product'] = esc_html($prodnameformail);
+			$replacements['product_name_link'] = '<a href="'.esc_url(get_permalink($gmqqp_product_id)).'">'.esc_html($prodnameformail).'</a>';
+			$replacements['product_id'] = (string) $gmqqp_product_id;
+			$replacements['site_title'] = esc_html(get_bloginfo( 'name' ));
+			$replacements['site_url'] = esc_url(get_site_url());
+
+			$body = preg_replace_callback(
+				'/\[([A-Za-z0-9_\-]+)\]/',
+				function ($m) use ($replacements) {
+					$k = strtolower($m[1]);
+					return array_key_exists($k, $replacements) ? $replacements[$k] : $m[0];
+				},
+				$gmwqp_email_body
+			);
+
 			$headers = array(
 			    'Content-Type: text/html; charset=UTF-8'
 			);
 
-			if ( $gmwqp_send_enquiry_replyto_customer_email=='yes'  ) { // your flag
-			    $headers[] = 'Reply-To: '.$gmwqp_email.' <'.$gmwqp_email.'>';
+			if ( $gmwqp_send_enquiry_replyto_customer_email=='yes' && $gmwqp_email_valid!='' ) { // your flag
+			    $headers[] = 'Reply-To: '.$gmwqp_email_valid.' <'.$gmwqp_email_valid.'>';
 			}
 
 	        $gmwqp_email_sub = str_ireplace("[product]",$prodnameformail,$gmwqp_email_sub);
 			wp_mail( $to, $gmwqp_email_sub, $body ,$headers);
-			if($gmwqp_send_enquiry_email_cutomer=='yes' && $gmwqp_email!=''){
+			if($gmwqp_send_enquiry_email_cutomer=='yes' && $gmwqp_email_valid!=''){
 				$headers = array(
 				    'Content-Type: text/html; charset=UTF-8'
 				);
@@ -211,7 +202,7 @@ class GMWQP_Comman {
 				    $headers[] = 'Reply-To: '.$to.' <'.$to.'>';
 				}
 				$gmwqp_customer_email_subject = str_ireplace("[product]",$prodnameformail,$gmwqp_customer_email_subject);
-				wp_mail( $gmwqp_email, $gmwqp_customer_email_subject, $body ,$headers);
+				wp_mail( $gmwqp_email_valid, $gmwqp_customer_email_subject, $body ,$headers);
 			}
 
 			// Webhook Implementation
